@@ -19,27 +19,53 @@
 
 ### 1. 在 GitHub 新建仓库
 
-例如仓库名：`shaosong-battles`（公开 Public）
+仓库名：**`shaosong`**（公开 Public）
 
-### 2. 在本机 `f:\song` 目录执行
+### 2. 在 GitHub 网页新建空仓库
+
+打开 https://github.com/new  
+
+- Repository name：`shaosong`  
+- Public  
+- **不要**勾选 “Add a README”（本地已有代码）
+
+### 3. 在本机 `f:\song` 执行（仓库已 init 并 commit 后可只执行 push 部分）
 
 ```powershell
 cd f:\song
-git init
-git add index.html yaoshan.html taiyuan.html huolu.html .nojekyll netlify.toml README.md DEPLOY.md
-git commit -m "Publish Shao Song battle sandboxes"
 git branch -M main
-git remote add origin https://github.com/你的用户名/shaosong-battles.git
+git remote add origin https://github.com/你的GitHub用户名/shaosong.git
 git push -u origin main
 ```
 
-### 3. 开启 Pages
+若远程已有内容，改用：
 
-仓库 → **Settings** → **Pages** → Source 选 **Deploy from branch** → Branch 选 `main`，文件夹选 **`/ (root)`** → Save  
+```powershell
+git push -u origin main --force
+```
 
-几分钟后访问：
+（仅在你确认远程仓库是新建空仓库时使用 `--force`。）
 
-`https://你的用户名.github.io/shaosong-battles/`
+### 4. 开启 GitHub Pages
+
+仓库 **shaosong** → **Settings** → **Pages** → **Build and deployment**  
+
+任选其一：
+
+**A. GitHub Actions（推荐，推送后自动发布）**  
+- Source：**GitHub Actions**  
+- 推送 `main` 后 Actions 跑完即可  
+
+**B. 从分支发布**  
+- Source：**Deploy from a branch**  
+- Branch：`main`，Folder：**/ (root)**  
+
+保存后等 1～3 分钟，访问：
+
+`https://你的GitHub用户名.github.io/shaosong/`
+
+首页：`.../shaosong/index.html`  
+尧山：`.../shaosong/yaoshan.html`
 
 ---
 
