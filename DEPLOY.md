@@ -46,19 +46,20 @@ git push -u origin main --force
 
 （仅在你确认远程仓库是新建空仓库时使用 `--force`。）
 
-### 4. 开启 GitHub Pages
+### 4. 开启 GitHub Pages（重要：二选一，不要混用）
 
-仓库 **shaosong** → **Settings** → **Pages** → **Build and deployment**  
+仓库 **shaosong** → **Settings** → **Pages** → **Build and deployment** → **Source**
 
-任选其一：
+**推荐：GitHub Actions（与仓库内 `.github/workflows/pages.yml` 配套）**
 
-**A. GitHub Actions（推荐，推送后自动发布）**  
-- Source：**GitHub Actions**  
-- 推送 `main` 后 Actions 跑完即可  
+1. Source 选 **GitHub Actions**（不要选 Deploy from a branch）
+2. 推送 `main` 后打开 **Actions** 标签，等绿色 ✓
+3. 再回到 **Settings → Pages**，应出现绿色链接
 
-**B. 从分支发布**  
-- Source：**Deploy from a branch**  
-- Branch：`main`，Folder：**/ (root)**  
+若 Source 选了「从分支」而仓库里又有 Actions 工作流，Actions 会报错、网站也会一直 404。
+
+**备选：从分支发布**（需删除 `.github/workflows/pages.yml`）  
+- Source：**Deploy from a branch** → `main` → **/ (root)** → Save  
 
 保存后等 1～3 分钟，访问：
 

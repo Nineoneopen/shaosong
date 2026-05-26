@@ -1,3 +1,5 @@
+# 发布到 https://nineoneopen.github.io/shaosong/
+# 仓库 Settings → Pages → Source 必须选「GitHub Actions」，不能选 Deploy from a branch
 name: Deploy GitHub Pages
 
 on:
