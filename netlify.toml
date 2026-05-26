@@ -1,0 +1,18 @@
+[build]
+  publish = "."
+  command = "echo no build"
+
+[[redirects]]
+  from = "/yaoshan"
+  to = "/yaoshan.html"
+  status = 302
+
+[[redirects]]
+  from = "/taiyuan"
+  to = "/taiyuan.html"
+  status = 302
+
+[[redirects]]
+  from = "/huolu"
+  to = "/huolu.html"
+  status = 302

@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>绍宋 · 战役推演</title>
+  <style>
+:root {
+  --bg: #1a1612;
+  --panel: #252018;
+  --border: #4a3f32;
+  --song: #c45c26;
+  --song-dim: rgba(196, 92, 38, 0.35);
+  --jin: #3d6b8a;
+  --jin-dim: rgba(61, 107, 138, 0.4);
+  --gold: #d4a84b;
+  --text: #e8dcc8;
+  --muted: #9a8b76;
+  --accent: #8b4513;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: "PingFang SC", "Microsoft YaHei", "Noto Serif SC", "STSong", serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(212, 168, 75, 0.08), transparent),
+    linear-gradient(180deg, #1a1612 0%, #12100d 100%);
+}
+header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+header .top-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.75rem 1.5rem;
+  margin-bottom: 0.5rem;
+}
+header h1 {
+      font-family: "STKaiti", "KaiTi", "PingFang SC", serif;
+  font-size: 1.75rem;
+  font-weight: 400;
+  color: var(--gold);
+  letter-spacing: 0.15em;
+}
+header .sub { color: var(--muted); font-size: 0.9rem; }
+.battle-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  font-size: 0.8rem;
+}
+.battle-nav a {
+  color: var(--muted);
+  text-decoration: none;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+.battle-nav a:hover { color: var(--gold); border-color: var(--gold); }
+.battle-nav a.active { color: var(--gold); background: rgba(212, 168, 75, 0.12); border-color: var(--gold); }
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  grid-template-rows: auto 1fr;
+  gap: 0;
+  height: calc(100vh - 100px);
+}
+@media (max-width: 960px) {
+  .layout { grid-template-columns: 1fr; grid-template-rows: auto 50vh auto; height: auto; min-height: calc(100vh - 100px); }
+}
+.map-wrap {
+  position: relative;
+  background: #14110e;
+  border-right: 1px solid var(--border);
+  overflow: hidden;
+}
+.anim-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0;
+  background: linear-gradient(90deg, var(--gold), var(--song));
+  transition: width 0.05s linear;
+  z-index: 5;
+  pointer-events: none;
+}
+.controls button.film {
+  background: #5a3d1a;
+  border-color: var(--gold);
+}
+#map { display: block; width: 100%; height: 100%; cursor: crosshair; }
+.map-legend {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: rgba(37, 32, 24, 0.92);
+  border: 1px solid var(--border);
+  padding: 10px 14px;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  line-height: 1.6;
+}
+.map-legend span {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 6px;
+  vertical-align: middle;
+  border-radius: 2px;
+}
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border-left: 1px solid var(--border);
+  overflow: hidden;
+}
+@media (max-width: 960px) {
+  .sidebar { border-left: none; border-top: 1px solid var(--border); max-height: 50vh; }
+}
+.phase-nav { padding: 12px 14px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.phase-nav label { font-size: 0.75rem; color: var(--muted); display: block; margin-bottom: 6px; }
+.phase-slider { width: 100%; accent-color: var(--gold); }
+.phase-meta { display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.8rem; }
+.phase-meta strong { color: var(--gold); }
+.controls { display: flex; gap: 8px; margin-top: 10px; }
+.controls button {
+  flex: 1;
+  padding: 8px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  background: var(--accent);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.controls button:hover { filter: brightness(1.15); }
+.controls button.primary { background: #6b4423; border-color: var(--gold); }
+.content { flex: 1; overflow-y: auto; padding: 14px 16px; }
+.phase-title { font-size: 1.15rem; color: var(--gold); margin-bottom: 8px; font-family: "STKaiti", "KaiTi", serif; }
+.phase-time { font-size: 0.8rem; color: var(--muted); margin-bottom: 12px; }
+.narrative { font-size: 0.92rem; line-height: 1.75; margin-bottom: 14px; text-align: justify; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.tag { font-size: 0.72rem; padding: 3px 8px; border-radius: 3px; border: 1px solid var(--border); }
+.tag.song { background: var(--song-dim); color: #f0a070; }
+.tag.jin { background: var(--jin-dim); color: #8ec4e0; }
+.tag.turn { border-color: var(--gold); color: var(--gold); }
+.tag.xi { background: rgba(120, 90, 160, 0.35); color: #c9b0e8; }
+.figures { border-top: 1px solid var(--border); padding-top: 12px; }
+.figures h4 { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; font-weight: 400; }
+.figure-list { font-size: 0.82rem; line-height: 1.6; color: var(--muted); }
+.figure-list b { color: var(--text); font-weight: 600; }
+.toolbar {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+  background: var(--panel);
+  font-size: 0.8rem;
+  align-items: center;
+}
+.toolbar label { display: flex; align-items: center; gap: 6px; color: var(--muted); cursor: pointer; }
+.toolbar input { accent-color: var(--gold); }
+.disclaimer {
+  padding: 8px 16px 12px;
+  font-size: 0.72rem;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+}
+.tooltip {
+  position: fixed;
+  pointer-events: none;
+  background: rgba(20, 17, 14, 0.95);
+  border: 1px solid var(--gold);
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  max-width: 220px;
+  border-radius: 4px;
+  z-index: 100;
+  display: none;
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="top-row">
+      <h1 id="hdrTitle"></h1>
+      <span class="sub" id="hdrSub">第七十六章「落雕」· 动画推演</span>
+    </div>
+    <nav class="battle-nav">
+      <a href="index.html">战役目录</a>
+      <a href="yaoshan.html" class="active">尧山之战</a>
+      <a href="taiyuan.html">太原破城</a>
+      <a href="huolu.html">获鹿决战</a>
+    </nav>
+  </header>
+  <div class="layout">
+    <div class="map-wrap">
+      <div class="anim-progress" id="animProgress"></div>
+      <canvas id="map"></canvas>
+      <div class="map-legend" id="mapLegend">
+        <div><span style="background:#6b5344"></span>东坡塬 / 高地</div>
+        <div><span style="background:#3d5c3a"></span>营前平地</div>
+        <div><span style="background:#c45c26"></span>宋军</div>
+        <div><span style="background:#3d6b8a"></span>金军</div>
+        <div><span style="background:#d4a84b"></span>龙纛</div>
+      </div>
+    </div>
+    <aside class="sidebar">
+      <div class="phase-nav">
+        <label>战局阶段 · 切换时有兵力移动动画</label>
+        <input type="range" class="phase-slider" id="phaseSlider" value="0" />
+        <div class="phase-meta">
+          <span>阶段 <strong id="phaseNum">1</strong> / <strong id="phaseTotal">1</strong></span>
+          <span id="phaseClock"></span>
+        </div>
+        <div class="controls">
+          <button type="button" id="btnPrev">← 上一阶段</button>
+          <button type="button" class="primary film" id="btnFilm">🎬 动画播放</button>
+          <button type="button" id="btnNext">下一阶段 →</button>
+        </div>
+        <div class="controls" style="margin-top:6px">
+          <button type="button" id="btnPlay" style="flex:1">▶ 分步播放</button>
+        </div>
+      </div>
+      <div class="content">
+        <h2 class="phase-title" id="phaseTitle"></h2>
+        <p class="phase-time" id="phaseTime"></p>
+        <div class="tags" id="phaseTags"></div>
+        <p class="narrative" id="phaseNarrative"></p>
+        <div class="figures">
+          <h4>本阶段关键人物</h4>
+          <p class="figure-list" id="phaseFigures"></p>
+        </div>
+      </div>
+      <p class="disclaimer" id="disclaimer"></p>
+    </aside>
+    <div class="toolbar">
+      <label><input type="checkbox" id="showLabels" checked /> 地名</label>
+      <label><input type="checkbox" id="showUnits" checked /> 兵力</label>
+      <label><input type="checkbox" id="showArrows" checked /> 箭头</label>
+      <label><input type="checkbox" id="highlightEmperor" checked /> 龙纛/御驾</label>
+      <label><input type="checkbox" id="enableAnim" checked /> 阶段过渡动画</label>
+    </div>
+  </div>
+  <div class="tooltip" id="tooltip"></div>
+  <script>
+window.BATTLE_CONFIG = {
+  battleId: "yaoshan",
+  pageTitle: "绍宋 · 尧山之战沙盘",
+  headerTitle: "尧山之战",
+  headerSub: "第七十六章「落雕」· 动画推演",
+  mapStyle: "yaoshan",
+  animDuration: 1600,
+  holdDuration: 2800,
+  playInterval: 4000,
+  disclaimer: "地形与兵力为示意。情节据第七十六章。仅供学习。",
+  legend: [
+    { color: "#6b5344", label: "东坡塬 / 高地" },
+    { color: "#3d5c3a", label: "营前平地" },
+    { color: "#c45c26", label: "宋军" },
+    { color: "#3d6b8a", label: "金军" },
+    { color: "#d4a84b", label: "龙纛" },
+  ],
+  terrain: [
+      { name: "尧山", x: 0.78, y: 0.18 },
+      { name: "御营大寨", x: 0.75, y: 0.28 },
+      { name: "东坡塬", x: 0.25, y: 0.35 },
+      { name: "五龙山", x: 0.15, y: 0.55 },
+      { name: "北洛水", x: 0.2, y: 0.7 },
+      { name: "梁山", x: 0.35, y: 0.75 },
+      { name: "营前平地", x: 0.5, y: 0.5 },
+      { name: "泥淖（南）", x: 0.55, y: 0.65 },
+    ],
+  phases: [
+      {
+        title: "龙纛升起 · 决战开幕",
+        time: "辰时前后 · 御营中军",
+        tags: ["song", "turn"],
+        narrative: "龙纛在中军大营升起约一刻钟后，全军士气大振。此前东坡塬上与南侧已鏖战半日；娄室于塬南列阵，五色捧日旗、海东青齐出。焦文通部本拟轮换休整，见龙纛后改留营前，侧翼对准娄室大旗，欲趁其与秦凤路缠斗时出奇功。",
+        figures: "<b>赵玖</b>驻山观战，尚未下山 · <b>吴玠</b>督师营前 · <b>王彦</b>塬上督战 · <b>完颜娄室</b>金军主帅",
+        units: [
+          { id: "long", type: "banner", side: "song", x: 0.72, y: 0.22, label: "龙纛" },
+          { id: "camp", type: "camp", side: "song", x: 0.75, y: 0.28, label: "大营" },
+          { id: "wu", type: "army", side: "song", x: 0.55, y: 0.45, label: "吴玠" },
+          { id: "qin", type: "army", side: "song", x: 0.42, y: 0.52, label: "秦凤路" },
+          { id: "xi", type: "army", side: "song", x: 0.35, y: 0.58, label: "熙河路" },
+          { id: "lou", type: "army", side: "jin", x: 0.48, y: 0.48, label: "娄室" },
+          { id: "yuan", type: "terrain", x: 0.25, y: 0.35, label: "东坡塬" },
+        ],
+        arrows: []
+      },
+      {
+        title: "铁骑台风 · 焦文通部覆灭",
+        time: "龙纛升起后不久",
+        tags: ["jin", "turn"],
+        narrative: "蒲查胡盏率满员千骑铁浮屠贴塬底「铲」下焦文通部；娄室以五色捧日旗为轴，七千骑环射推进，旋即贴身侧冲——车轮战、台风阵。神臂弓与长斧大半已交官家，焦部几无还手之力，七零八落四散。宋军刚因龙纛而涨的气势瞬间被浇灭。",
+        figures: "<b>完颜娄室</b> · <b>蒲查胡盏</b>（合扎猛安） · <b>焦文通</b>（统制，生死不明） · <b>王彦</b>目睹后决断转向",
+        units: [
+          { id: "long", type: "banner", side: "song", x: 0.72, y: 0.22, label: "龙纛" },
+          { id: "iron1", type: "cavalry", side: "jin", x: 0.38, y: 0.42, label: "铁浮屠×2" },
+          { id: "lou", type: "cavalry", side: "jin", x: 0.45, y: 0.5, label: "娄室七千骑" },
+          { id: "jiao", type: "broken", side: "song", x: 0.4, y: 0.48, label: "焦文通溃" },
+          { id: "wang", type: "army", side: "song", x: 0.28, y: 0.38, label: "王彦" },
+          { id: "qin", type: "army", side: "song", x: 0.42, y: 0.55, label: "秦凤路" },
+        ],
+        arrows: [
+          { from: [0.38, 0.42], to: [0.4, 0.48], side: "jin" },
+          { from: [0.45, 0.5], to: [0.4, 0.48], side: "jin" },
+        ]
+      },
+      {
+        title: "王彦立旗 · 阻溃兵上塬",
+        time: "紧接着",
+        tags: ["song"],
+        narrative: "王彦见本部核心焦文通部被碾碎，脑中空白后决意：令王德督塬上不得后退，八字军转向列阵，移旗至塬西端阻溃兵上塬。娄室曾有一瞬想驱胜兵冲上塬，见王彦立旗即放弃——他只要全胜，目标只有龙纛。",
+        figures: "<b>王彦</b>（八字军节帅） · <b>王德</b> · <b>娄室</b>瞥见后挥旗指向龙纛",
+        units: [
+          { id: "wang", type: "banner", side: "song", x: 0.26, y: 0.36, label: "王彦旗" },
+          { id: "yuan", type: "terrain", x: 0.25, y: 0.35, label: "东坡塬" },
+          { id: "lou", type: "cavalry", side: "jin", x: 0.5, y: 0.48, label: "娄室" },
+          { id: "qin", type: "army", side: "song", x: 0.43, y: 0.54, label: "秦凤路列阵" },
+          { id: "long", type: "banner", side: "song", x: 0.72, y: 0.22, label: "龙纛" },
+        ],
+        arrows: [{ from: [0.5, 0.48], to: [0.72, 0.22], side: "jin", dash: true }]
+      },
+      {
+        title: "秦凤路稳阵 · 赵哲鼓军",
+        time: "焦文通覆灭后",
+        tags: ["song"],
+        narrative: "赵哲入阵大呼：官家在后、赏赐已发。长枪前杵，神臂弓弩按射程排列，骑兵两翼——旋即慌觉左翼利州路远在泥淖，几乎不设防。金军六千余骑护五色捧日旗扑来；秦凤路因人数与厚度，娄室中军暂以环射对枪阵，未再摧枯拉朽。",
+        figures: "<b>赵哲</b>（秦凤路经略） · <b>娄室</b>正面环射 · 熙河路侧翼给士卒信心",
+        units: [
+          { id: "qin", type: "army", side: "song", x: 0.44, y: 0.52, label: "秦凤路枪阵" },
+          { id: "xi", type: "army", side: "song", x: 0.36, y: 0.58, label: "熙河路" },
+          { id: "lou", type: "cavalry", side: "jin", x: 0.5, y: 0.5, label: "娄室中军" },
+          { id: "ironL", type: "cavalry", side: "jin", x: 0.52, y: 0.46, label: "铁浮屠左翼" },
+          { id: "ironR", type: "cavalry", side: "jin", x: 0.48, y: 0.56, label: "铁浮屠右翼" },
+        ],
+        arrows: [
+          { from: [0.5, 0.5], to: [0.44, 0.52], side: "jin" },
+          { from: [0.52, 0.46], to: [0.44, 0.52], side: "jin", dash: true },
+        ]
+      },
+      {
+        title: "两翼铁浮屠 · 掏腹包抄",
+        time: "接战不久",
+        tags: ["jin"],
+        narrative: "蒲查胡盏从东北绕开，夹谷吾里补自熙河路与秦凤路交界处扎入——两千铁浮屠将掏穿秦凤路腹部。曲端于山南占点，见合扎猛安突出、中军露破绽，命李永奇父子率三千党项蕃骑抄娄室侧后。",
+        figures: "<b>曲端</b> · <b>李永奇</b>、<b>李世辅</b>（党项蕃骑） · <b>夹谷吾里补</b>、<b>蒲查胡盏</b>",
+        units: [
+          { id: "ironL", type: "cavalry", side: "jin", x: 0.55, y: 0.44, label: "蒲查胡盏" },
+          { id: "ironR", type: "cavalry", side: "jin", x: 0.38, y: 0.56, label: "夹谷吾里补" },
+          { id: "li", type: "cavalry", side: "song", x: 0.58, y: 0.52, label: "李永奇3000骑" },
+          { id: "qu", type: "army", side: "song", x: 0.62, y: 0.58, label: "曲端" },
+          { id: "lou", type: "cavalry", side: "jin", x: 0.48, y: 0.5, label: "娄室圆阵" },
+        ],
+        arrows: [
+          { from: [0.55, 0.44], to: [0.44, 0.52], side: "jin" },
+          { from: [0.58, 0.52], to: [0.48, 0.5], side: "song" },
+        ]
+      },
+      {
+        title: "李永奇部溃 · 曲端决死",
+        time: "蕃骑突击瞬间",
+        tags: ["jin", "turn"],
+        narrative: "党项轻骑极速而来，娄室勒马提速，圆阵无需调整便反向扑出——台风再卷，李永奇部顷刻粉碎，李永奇被生擒后遭娄室短锤碎颅。赵玖山上目睹，如木偶端坐龙纛下：御营精锐与边臣一个个碎掉，他不能指挥，只能提供理由与勇气。",
+        figures: "<b>李永奇</b>战死 · <b>娄室</b> · <b>赵玖</b>（龙纛下） · <b>吴玠</b>督战",
+        units: [
+          { id: "long", type: "banner", side: "song", x: 0.72, y: 0.22, label: "龙纛·赵玖" },
+          { id: "lou", type: "cavalry", side: "jin", x: 0.5, y: 0.5, label: "娄室" },
+          { id: "li", type: "broken", side: "song", x: 0.56, y: 0.54, label: "李永奇溃" },
+          { id: "ironR", type: "cavalry", side: "jin", x: 0.4, y: 0.54, label: "掏入秦凤腹" },
+        ],
+        arrows: [{ from: [0.5, 0.5], to: [0.56, 0.54], side: "jin" }]
+      },
+      {
+        title: "背嵬军现身 · 铁钳反击",
+        time: "秦凤路危急时",
+        tags: ["song", "turn"],
+        narrative: "娄室以为营前仅秦凤、熙河两路，从两军缝隙冲入欲一战而定。吴玠狂喜：身后背嵬军方是真底。田师中三千长斧重甲反冲夹谷吾里补；东北方向三千宋重甲骑兵兜住另一合扎猛安。韩常嗤笑：这等兵马必是韩、岳、张级帅臣亲军，官家竟能调度。",
+        figures: "<b>吴玠</b> · <b>田师中</b>（长斧背嵬） · <b>张宪</b> · <b>韩世忠</b>（将至塬后） · <b>韩常</b>、<b>兀术</b>",
+        units: [
+          { id: "axe", type: "elite", side: "song", x: 0.46, y: 0.5, label: "长斧背嵬" },
+          { id: "cav", type: "elite", side: "song", x: 0.38, y: 0.48, label: "背嵬骑" },
+          { id: "lou", type: "cavalry", side: "jin", x: 0.5, y: 0.5, label: "娄室" },
+          { id: "ironR", type: "cavalry", side: "jin", x: 0.42, y: 0.52, label: "夹谷吾里补" },
+        ],
+        arrows: [
+          { from: [0.46, 0.5], to: [0.42, 0.52], side: "song" },
+          { from: [0.38, 0.48], to: [0.5, 0.5], side: "song", dash: true },
+        ]
+      },
+      {
+        title: "娄室决突 · 秦凤路大崩",
+        time: "背嵬出手后旋即",
+        tags: ["jin", "turn"],
+        narrative: "娄室令剖叔两千骑挡韩世忠，自领两千锋矢再冲秦凤路；蒲查胡盏忽然抽出秦凤腹直扑张宪背嵬——抽刀比插刀更致命。前军大溃，乔泽一枪被娄室刺死，赵哲惊惶欲走。吴玠迎上，毫不犹豫一枪刺死赵哲以稳军心。",
+        figures: "<b>娄室</b>两千决突 · <b>赵哲</b>、<b>乔泽</b> · <b>吴玠</b>刺杀赵哲 · <b>完颜剖叔</b>挡韩",
+        units: [
+          { id: "lou", type: "cavalry", side: "jin", x: 0.44, y: 0.52, label: "娄室突入" },
+          { id: "qin", type: "broken", side: "song", x: 0.42, y: 0.54, label: "秦凤溃" },
+          { id: "wu", type: "banner", side: "song", x: 0.48, y: 0.5, label: "吴玠" },
+          { id: "puch", type: "cavalry", side: "jin", x: 0.4, y: 0.48, label: "蒲查胡盏" },
+        ],
+        arrows: [
+          { from: [0.44, 0.52], to: [0.42, 0.54], side: "jin" },
+          { from: [0.48, 0.5], to: [0.44, 0.52], side: "song", dash: true },
+        ]
+      },
+      {
+        title: "主帅单挑 · 吴玠败退",
+        time: "营前混战",
+        tags: ["jin", "song"],
+        narrative: "娄室率溃军驱逼至吴玠身前，二人单挑：二十合后吴玠双臂发麻，知必死，众目睽睽下打马而走——秦凤、熙河彻底失控，似大局已去。曲端、刘晏未突破，田师长斧未至。",
+        figures: "<b>吴玠</b> vs <b>娄室</b>（吴败走） · <b>曲端</b>、<b>刘晏</b> · 营寨危",
+        units: [
+          { id: "wu", type: "broken", side: "song", x: 0.52, y: 0.48, label: "吴玠退" },
+          { id: "lou", type: "cavalry", side: "jin", x: 0.5, y: 0.5, label: "娄室" },
+          { id: "qin", type: "broken", side: "song", x: 0.4, y: 0.56, label: "溃军" },
+          { id: "long", type: "banner", side: "song", x: 0.72, y: 0.22, label: "龙纛" },
+        ],
+        arrows: [{ from: [0.5, 0.5], to: [0.52, 0.48], side: "jin" }]
+      },
+      {
+        title: "山动了 · 龙纛下山",
+        time: "吴玠败退的下一刻",
+        tags: ["song", "turn"],
+        narrative: "吴玠败退瞬间，龙纛自山麓压下，精锐步兵抢在纛前先压。韩常理性：金不可能全胜、宋不可能再输。兀术失神：山动了！刘錡出沼、王彦下塬、韩世忠铜面骑先过塬下、熙河刘锡重组、李世辅千余骑来集。驱败兵冲寨的金军最大杀招失效。",
+        figures: "<b>赵玖</b>（将下山） · <b>杨沂中</b> · <b>韩世忠</b> · <b>兀术</b>「山动」 · <b>刘錡</b>",
+        units: [
+          { id: "long", type: "banner", side: "song", x: 0.68, y: 0.32, label: "龙纛下压" },
+          { id: "inf", type: "elite", side: "song", x: 0.65, y: 0.36, label: "御营精锐" },
+          { id: "han", type: "cavalry", side: "song", x: 0.3, y: 0.4, label: "韩世忠" },
+          { id: "lou", type: "cavalry", side: "jin", x: 0.52, y: 0.5, label: "娄室" },
+          { id: "wu", type: "army", side: "song", x: 0.54, y: 0.46, label: "吴玠回身" },
+        ],
+        arrows: [{ from: [0.68, 0.32], to: [0.52, 0.5], side: "song" }]
+      },
+      {
+        title: "娄室迎纛 · 决死冲锋",
+        time: "龙纛出营前后",
+        tags: ["jin", "turn"],
+        narrative: "娄室知战略已失效，轻笑：北撤病死榻上非他所选，只剩迎上去，死在龙纛下——死路非败路，大金与国运或仍可胜。转身提枪冲击，如黄龙府再临。吴玠知其在做什么，战场混乱使双方都无法有效集结。",
+        figures: "<b>娄室</b>决死 · <b>完颜剖叔</b>挡韩 · 四太子、韩常、拔离速（塬上/远处）",
+        units: [
+          { id: "long", type: "banner", side: "song", x: 0.62, y: 0.38, label: "龙纛出营" },
+          { id: "lou", type: "cavalry", side: "jin", x: 0.58, y: 0.42, label: "娄室迎上" },
+          { id: "wu", type: "army", side: "song", x: 0.55, y: 0.44, label: "吴玠" },
+          { id: "qu", type: "army", side: "song", x: 0.6, y: 0.4, label: "曲端" },
+        ],
+        arrows: [{ from: [0.58, 0.42], to: [0.62, 0.38], side: "jin" }]
+      },
+      {
+        title: "御前斩首战 · 弯弓对射",
+        time: "龙纛前百余步",
+        tags: ["song", "jin", "turn"],
+        narrative: "赵玖拒吴玠撤离令，披甲至龙纛前。娄室放弃压制，率残部直扑龙纛；杨沂中失措，班直阵被战马撞开。百步外娄室取弓，赵玖也搭箭——赵先射偏，曲端箭中娄室左臂；娄室折箭换枪再突。韩世忠仰射正中马首，年轻小将再射腋下。",
+        figures: "<b>赵玖</b> · <b>娄室</b> · <b>杨沂中</b>负伤 · <b>曲端</b> · <b>韩世忠</b> · 班直圈",
+        units: [
+          { id: "long", type: "banner", side: "song", x: 0.6, y: 0.4, label: "赵玖·龙纛" },
+          { id: "lou", type: "elite", side: "jin", x: 0.58, y: 0.42, label: "娄室" },
+          { id: "yang", type: "broken", side: "song", x: 0.59, y: 0.41, label: "杨沂中" },
+        ],
+        arrows: [
+          { from: [0.58, 0.42], to: [0.6, 0.4], side: "jin" },
+          { from: [0.6, 0.4], to: [0.58, 0.42], side: "song", dash: true },
+        ]
+      },
+      {
+        title: "落雕 · 枭首与殉",
+        time: "咫尺之间",
+        tags: ["song", "turn"],
+        narrative: "娄室马倒后勉力起身，小将一箭射腋下；持斧都头（后文侯丹）劈落臂、斫首，高呼「张永珍」——未完便被金旗手斧杀。娄室首级被年轻小将挑枪。金军中军杀性仍起，旋即溃撤。此战军事上宋胜，娄室则以死成全大金名节。",
+        figures: "<b>侯丹</b>（斧枭首，殉） · <b>娄室</b>阵亡 · 旗手、班直 · 曲端、韩世忠",
+        units: [
+          { id: "long", type: "banner", side: "song", x: 0.6, y: 0.4, label: "龙纛" },
+          { id: "lou", type: "dead", side: "jin", x: 0.58, y: 0.42, label: "娄室" },
+          { id: "hou", type: "dead", side: "song", x: 0.57, y: 0.41, label: "侯丹" },
+        ],
+        arrows: []
+      },
+      {
+        title: "射落海东青 · 暮雨收兵",
+        time: "傍晚 · 击溃战后",
+        tags: ["song"],
+        narrative: "小林学士提醒：击溃非全歼，完颜活女北面接应。赵玖令韩世忠、张宪兜五龙山、北洛水、梁山，截兀术、韩常万余骑。诸将集于龙纛下，赵玖令万箭射落盘旋的海东青；箭落如雨时闷雷滚过，豆大雨点终至。史传：五月廿八，尧山之下，宋金攻守异形。",
+        figures: "<b>赵玖</b> · <b>韩世忠</b>、<b>吴玠</b>、<b>曲端</b>等 · <b>侯丹</b>封尧山山神（后事）",
+        units: [
+          { id: "long", type: "banner", side: "song", x: 0.65, y: 0.35, label: "龙纛" },
+          { id: "eagle", type: "special", x: 0.5, y: 0.15, label: "海东青" },
+          { id: "rain", type: "special", x: 0.5, y: 0.5, label: "暮雨" },
+        ],
+        arrows: [{ from: [0.65, 0.35], to: [0.5, 0.15], side: "song", dash: true }]
+      }
+    ],
+};
+/**
+ * 绍宋战役沙盘 — 通用引擎（含阶段过渡动画）
+ */
+(function () {
+  const cfg = window.BATTLE_CONFIG;
+  if (!cfg || !cfg.phases?.length) {
+    console.error("BATTLE_CONFIG.phases required");
+    return;
+  }
+
+  document.title = cfg.pageTitle || "绍宋 · 战役推演";
+  const h1 = document.getElementById("hdrTitle");
+  if (h1 && cfg.headerTitle) h1.textContent = cfg.headerTitle;
+  const disc = document.getElementById("disclaimer");
+  if (disc && cfg.disclaimer) disc.textContent = cfg.disclaimer;
+
+  const phases = cfg.phases;
+  const terrain = cfg.terrain || [];
+  const animDuration = cfg.animDuration ?? 1600;
+  const holdDuration = cfg.holdDuration ?? 2800;
+
+  let phase = 0;
+  let playing = false;
+  let playTimer = null;
+  let filmMode = false;
+  let displayUnits = [];
+  let displayArrows = [];
+  let rafId = null;
+
+  const canvas = document.getElementById("map");
+  const ctx = canvas.getContext("2d");
+  const tooltip = document.getElementById("tooltip");
+  const slider = document.getElementById("phaseSlider");
+  const progressBar = document.getElementById("animProgress");
+
+  slider.min = 0;
+  slider.max = phases.length - 1;
+
+  function easeInOut(t) {
+    return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+  }
+
+  function cloneUnits(units) {
+    return (units || []).map((u) => ({ ...u }));
+  }
+
+  function unitKey(u) {
+    return u.id || u.label || `${u.x}-${u.y}`;
+  }
+
+  function lerpUnits(from, to, t) {
+    const mf = new Map(from.map((u) => [unitKey(u), u]));
+    const mt = new Map(to.map((u) => [unitKey(u), u]));
+    const keys = new Set([...mf.keys(), ...mt.keys()]);
+    const out = [];
+    keys.forEach((k) => {
+      const a = mf.get(k);
+      const b = mt.get(k);
+      if (a && b) {
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        out.push({
+          ...b,
+          x: a.x + dx * t,
+          y: a.y + dy * t,
+          alpha: 1,
+          scale: 1 + 0.18 * Math.sin(t * Math.PI),
+          marchDx: dx,
+          marchDy: dy,
+        });
+      } else if (a) out.push({ ...a, alpha: 1 - t });
+      else out.push({ ...b, alpha: t });
+    });
+    return out.filter((u) => (u.alpha ?? 1) > 0.04);
+  }
+
+  function lerpArrows(from, to, t) {
+    const out = [];
+    const max = Math.max((from || []).length, (to || []).length);
+    for (let i = 0; i < max; i++) {
+      const a = from?.[i];
+      const b = to?.[i];
+      if (a && b) {
+        out.push({
+          from: [
+            a.from[0] + (b.from[0] - a.from[0]) * t,
+            a.from[1] + (b.from[1] - a.from[1]) * t,
+          ],
+          to: [
+            a.to[0] + (b.to[0] - a.to[0]) * t,
+            a.to[1] + (b.to[1] - a.to[1]) * t,
+          ],
+          side: b.side,
+          dash: b.dash,
+          alpha: 1,
+        });
+      } else if (a) out.push({ ...a, alpha: 1 - t });
+      else if (b) out.push({ ...b, alpha: t });
+    }
+    return out.filter((a) => a.alpha > 0.04);
+  }
+
+  function drawMarchGhost(u, w, h) {
+    if (u.marchDx == null) return;
+    const x0 = (u.x - u.marchDx * 0.35) * w;
+    const y0 = (u.y - u.marchDy * 0.35) * h;
+    const x1 = u.x * w;
+    const y1 = u.y * h;
+    ctx.save();
+    ctx.globalAlpha = 0.35;
+    ctx.strokeStyle = u.side === "jin" ? "#6eb5d8" : "#e89550";
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(x1, y1);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function cancelAnim() {
+    transitionToken = null;
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = null;
+    if (progressBar) progressBar.style.width = "0%";
+  }
+
+  let transitionToken = null;
+
+  function animEnabled() {
+    const el = document.getElementById("enableAnim");
+    return !el || el.checked;
+  }
+
+  function getOpts() {
+    return {
+      labels: document.getElementById("showLabels").checked,
+      units: document.getElementById("showUnits").checked,
+      arrows: document.getElementById("showArrows").checked,
+      emperor: document.getElementById("highlightEmperor").checked,
+    };
+  }
+
+  function defaultTerrain(w, h) {
+    ctx.save();
+    if (cfg.mapStyle === "hebei") {
+      ctx.fillStyle = "#2a3d28";
+      ctx.fillRect(0, h * 0.35, w, h * 0.65);
+      ctx.fillStyle = "#3a5a6e";
+      ctx.globalAlpha = 0.5;
+      ctx.beginPath();
+      ctx.moveTo(w * 0.15, h * 0.55);
+      ctx.lineTo(w * 0.85, h * 0.5);
+      ctx.lineTo(w * 0.9, h * 0.7);
+      ctx.lineTo(w * 0.1, h * 0.75);
+      ctx.closePath();
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = "#5c4a38";
+      ctx.beginPath();
+      ctx.moveTo(w * 0.05, h * 0.2);
+      ctx.lineTo(w * 0.35, h * 0.15);
+      ctx.lineTo(w * 0.4, h * 0.45);
+      ctx.lineTo(w * 0.08, h * 0.5);
+      ctx.closePath();
+      ctx.fill();
+    } else if (cfg.mapStyle === "shanxi") {
+      ctx.fillStyle = "#3d4a32";
+      ctx.fillRect(0, 0, w * 0.45, h);
+      ctx.fillStyle = "#4a3d32";
+      ctx.beginPath();
+      ctx.moveTo(w * 0.42, 0);
+      ctx.lineTo(w * 0.55, h * 0.3);
+      ctx.lineTo(w * 0.48, h);
+      ctx.lineTo(w * 0.35, h * 0.7);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = "#2d4a5a";
+      ctx.globalAlpha = 0.45;
+      ctx.fillRect(w * 0.5, h * 0.4, w * 0.5, h * 0.25);
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = "#2a3528";
+      ctx.fillRect(w * 0.48, 0, w * 0.52, h);
+    } else {
+      ctx.fillStyle = "#4a3d32";
+      ctx.beginPath();
+      ctx.moveTo(w * 0.05, h * 0.42);
+      ctx.lineTo(w * 0.42, h * 0.28);
+      ctx.lineTo(w * 0.38, h * 0.55);
+      ctx.lineTo(w * 0.08, h * 0.5);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = "#2d4a2a";
+      ctx.globalAlpha = 0.6;
+      ctx.fillRect(0, h * 0.45, w * 0.95, h * 0.55);
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = "#5c4a38";
+      ctx.beginPath();
+      ctx.moveTo(w * 0.65, h * 0.05);
+      ctx.lineTo(w * 0.95, h * 0.15);
+      ctx.lineTo(w * 0.9, h * 0.35);
+      ctx.lineTo(w * 0.6, h * 0.32);
+      ctx.closePath();
+      ctx.fill();
+    }
+    ctx.restore();
+    if (typeof cfg.drawTerrain === "function") cfg.drawTerrain(ctx, w, h);
+  }
+
+  function drawArrow(x1, y1, x2, y2, color, dash, alpha) {
+    ctx.save();
+    ctx.globalAlpha = alpha ?? 1;
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 2;
+    if (dash) ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    const ang = Math.atan2(y2 - y1, x2 - x1);
+    const ah = 10;
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - ah * Math.cos(ang - 0.4), y2 - ah * Math.sin(ang - 0.4));
+    ctx.lineTo(x2 - ah * Math.cos(ang + 0.4), y2 - ah * Math.sin(ang + 0.4));
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawUnit(u, w, h, opts) {
+    const alpha = u.alpha ?? 1;
+    if (alpha < 0.04) return;
+    if (opts.units && u.marchDx != null) drawMarchGhost(u, w, h);
+    const scale = u.scale ?? 1;
+    const x = u.x * w;
+    const y = u.y * h;
+    const side = u.side;
+    let color = "#888";
+    if (side === "song") {
+      color =
+        u.type === "banner"
+          ? "#d4a84b"
+          : u.type === "elite"
+            ? "#e07b39"
+            : u.type === "broken"
+              ? "#6b4423"
+              : u.type === "dead"
+                ? "#444"
+                : "#c45c26";
+    } else if (side === "jin") {
+      color = u.type === "cavalry" ? "#4a8ab0" : u.type === "dead" ? "#333" : "#3d6b8a";
+    } else if (side === "xi") color = "#7a5aaa";
+    if (u.type === "special") color = "#5a7a9a";
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    if (u.type === "banner" && opts.emperor) {
+      ctx.shadowColor = "#d4a84b";
+      ctx.shadowBlur = 16 + 8 * Math.sin(Date.now() / 280);
+    }
+    ctx.fillStyle = color;
+    if (u.type === "banner") {
+      ctx.beginPath();
+      ctx.moveTo(x, y - 14);
+      ctx.lineTo(x + 8, y);
+      ctx.lineTo(x, y + 4);
+      ctx.lineTo(x - 8, y);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillRect(x - 1, y, 2, 18);
+    } else if (u.type === "cavalry" || u.type === "elite") {
+      const r = (side === "jin" ? 10 : 9) * scale;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = "#fff";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    } else if (u.type === "camp" || u.type === "city") {
+      ctx.strokeStyle = color;
+      const rw = u.type === "city" ? 28 : 32;
+      const rh = u.type === "city" ? 22 : 20;
+      ctx.strokeRect(x - rw / 2, y - rh / 2, rw, rh);
+      if (u.type === "city") {
+        ctx.fillStyle = "rgba(196,92,38,0.25)";
+        ctx.fillRect(x - rw / 2, y - rh / 2, rw, rh);
+      }
+    } else {
+      ctx.fillRect(x - 12, y - 8, 24, 16);
+    }
+    ctx.restore();
+    if (opts.units && u.label && u.type !== "terrain") {
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = "#e8dcc8";
+      ctx.font = "11px sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(u.label, x, y + 22);
+      ctx.restore();
+    }
+  }
+
+  function draw() {
+    const w = canvas.clientWidth;
+    const h = canvas.clientHeight;
+    if (!w || !h) return;
+    ctx.clearRect(0, 0, w, h);
+    defaultTerrain(w, h);
+    const opts = getOpts();
+    if (opts.arrows && displayArrows.length) {
+      displayArrows.forEach((a) => {
+        const col = a.side === "jin" ? "#6eb5d8" : a.side === "xi" ? "#a88bd8" : "#e89550";
+        drawArrow(
+          a.from[0] * w,
+          a.from[1] * h,
+          a.to[0] * w,
+          a.to[1] * h,
+          col,
+          a.dash,
+          a.alpha
+        );
+      });
+    }
+    if (opts.units) displayUnits.forEach((u) => drawUnit(u, w, h, opts));
+    if (opts.labels) {
+      ctx.fillStyle = "rgba(232, 220, 200, 0.85)";
+      ctx.font = "12px sans-serif";
+      terrain.forEach((t) => {
+        ctx.textAlign = "center";
+        ctx.fillText(t.name, t.x * w, t.y * h);
+      });
+    }
+  }
+
+  const tagLabels = { song: "宋军", jin: "金军", turn: "转折点", xi: "西夏/藩部" };
+
+  function updatePanel(p) {
+    slider.value = phase;
+    document.getElementById("phaseNum").textContent = phase + 1;
+    document.getElementById("phaseTotal").textContent = phases.length;
+    document.getElementById("phaseTitle").textContent = p.title;
+    document.getElementById("phaseTime").textContent = p.time;
+    document.getElementById("phaseClock").textContent = p.time;
+    document.getElementById("phaseNarrative").textContent = p.narrative;
+    document.getElementById("phaseFigures").innerHTML = p.figures;
+    const tagsEl = document.getElementById("phaseTags");
+    tagsEl.innerHTML = "";
+    (p.tags || []).forEach((t) => {
+      const span = document.createElement("span");
+      span.className = "tag " + t;
+      span.textContent = tagLabels[t] || t;
+      tagsEl.appendChild(span);
+    });
+  }
+
+  function snapToPhase(n) {
+    phase = n;
+    displayUnits = cloneUnits(phases[phase].units);
+    displayArrows = [...(phases[phase].arrows || [])];
+    updatePanel(phases[phase]);
+    cancelAnim();
+    draw();
+  }
+
+  function goToPhase(target, instant, onDone) {
+    target = Math.max(0, Math.min(phases.length - 1, target));
+    if (target === phase && !instant) {
+      onDone?.();
+      return;
+    }
+    cancelAnim();
+
+    if (instant || !animEnabled()) {
+      snapToPhase(target);
+      onDone?.();
+      return;
+    }
+
+    const from = phase;
+    const fromU = cloneUnits(phases[from].units);
+    const toU = cloneUnits(phases[target].units);
+    const fromA = phases[from].arrows || [];
+    const toA = phases[target].arrows || [];
+    let start = null;
+    const token = {};
+    transitionToken = token;
+
+    function frame(now) {
+      if (transitionToken !== token) return;
+      if (!start) start = now;
+      const raw = Math.min(1, (now - start) / animDuration);
+      const t = easeInOut(raw);
+      displayUnits = lerpUnits(fromU, toU, t);
+      displayArrows = lerpArrows(fromA, toA, t);
+      if (progressBar) progressBar.style.width = raw * 100 + "%";
+      draw();
+      if (raw < 1) {
+        rafId = requestAnimationFrame(frame);
+      } else {
+        phase = target;
+        displayUnits = cloneUnits(phases[phase].units);
+        displayArrows = [...(phases[phase].arrows || [])];
+        updatePanel(phases[phase]);
+        if (progressBar) progressBar.style.width = "0%";
+        rafId = null;
+        if (transitionToken === token) transitionToken = null;
+        draw();
+        onDone?.();
+      }
+    }
+    updatePanel(phases[target]);
+    rafId = requestAnimationFrame(frame);
+  }
+
+  function setPhase(n, instant) {
+    goToPhase(n, !!instant);
+  }
+
+  function stopAllPlayback() {
+    playing = false;
+    filmMode = false;
+    clearTimeout(playTimer);
+    const btnPlay = document.getElementById("btnPlay");
+    const btnFilm = document.getElementById("btnFilm");
+    if (btnPlay) btnPlay.textContent = "▶ 分步播放";
+    if (btnFilm) btnFilm.textContent = "🎬 动画播放";
+  }
+
+  function runFilm() {
+    if (!filmMode) return;
+    if (phase >= phases.length - 1) {
+      stopAllPlayback();
+      return;
+    }
+    goToPhase(phase + 1, false, () => {
+      if (filmMode) setTimeout(runFilm, holdDuration);
+    });
+  }
+
+  slider.addEventListener("input", (e) => {
+    stopAllPlayback();
+    snapToPhase(parseInt(e.target.value, 10));
+  });
+  document.getElementById("btnPrev").addEventListener("click", () => {
+    stopAllPlayback();
+    setPhase(phase - 1, false);
+  });
+  document.getElementById("btnNext").addEventListener("click", () => {
+    stopAllPlayback();
+    setPhase(phase + 1, false);
+  });
+
+  function runStepPlay() {
+    if (!playing) return;
+    if (phase >= phases.length - 1) {
+      stopAllPlayback();
+      return;
+    }
+    goToPhase(phase + 1, false, () => {
+      if (playing) playTimer = setTimeout(runStepPlay, holdDuration);
+    });
+  }
+
+  document.getElementById("btnPlay").addEventListener("click", function () {
+    if (playing) {
+      stopAllPlayback();
+      clearTimeout(playTimer);
+      return;
+    }
+    stopAllPlayback();
+    playing = true;
+    this.textContent = "⏸ 暂停";
+    runStepPlay();
+  });
+
+  const btnFilm = document.getElementById("btnFilm");
+  if (btnFilm) {
+    btnFilm.addEventListener("click", function () {
+      if (filmMode) {
+        stopAllPlayback();
+        return;
+      }
+      stopAllPlayback();
+      filmMode = true;
+      this.textContent = "⏹ 停止动画";
+      if (phase >= phases.length - 1) snapToPhase(0);
+      runFilm();
+    });
+  }
+
+  ["showLabels", "showUnits", "showArrows", "highlightEmperor", "enableAnim"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener("change", () => draw());
+  });
+
+  function resize() {
+    const wrap = canvas.parentElement;
+    const dpr = window.devicePixelRatio || 1;
+    const w = wrap.clientWidth;
+    const h = wrap.clientHeight;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    canvas.style.width = w + "px";
+    canvas.style.height = h + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    draw();
+  }
+
+  window.addEventListener("resize", resize);
+  canvas.addEventListener("mousemove", (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    let hit = null;
+    for (const t of terrain) {
+      if (Math.hypot(t.x - x, t.y - y) < 0.06) hit = t.name;
+    }
+    for (const u of displayUnits) {
+      if (Math.hypot(u.x - x, u.y - y) < 0.04) {
+        const side =
+          u.side === "song" ? "（宋）" : u.side === "jin" ? "（金）" : u.side === "xi" ? "（夏）" : "";
+        hit = (u.label || "") + side;
+      }
+    }
+    if (hit) {
+      tooltip.style.display = "block";
+      tooltip.style.left = e.clientX + 12 + "px";
+      tooltip.style.top = e.clientY + 12 + "px";
+      tooltip.textContent = hit;
+    } else tooltip.style.display = "none";
+  });
+  canvas.addEventListener("mouseleave", () => (tooltip.style.display = "none"));
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft") {
+      stopAllPlayback();
+      setPhase(phase - 1, false);
+    }
+    if (e.key === "ArrowRight") {
+      stopAllPlayback();
+      setPhase(phase + 1, false);
+    }
+    if (e.key === " ") {
+      e.preventDefault();
+      document.getElementById("btnFilm")?.click() || document.getElementById("btnPlay").click();
+    }
+  });
+
+  snapToPhase(0);
+  resize();
+})();
+
+  </script>
+</body>
+</html>

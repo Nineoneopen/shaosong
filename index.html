@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>绍宋 · 战役沙盘目录</title>
+  <style>
+    :root {
+      --bg: #1a1612;
+      --panel: #252018;
+      --border: #4a3f32;
+      --gold: #d4a84b;
+      --text: #e8dcc8;
+      --muted: #9a8b76;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", "STSong", serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem 1.5rem 3rem;
+      max-width: 720px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+    h1 {
+      font-family: "STKaiti", "KaiTi", serif;
+      color: var(--gold);
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      margin-bottom: 0.5rem;
+    }
+    .lead { color: var(--muted); margin-bottom: 2rem; font-size: 0.95rem; }
+    .timeline { border-left: 2px solid var(--border); padding-left: 1.25rem; margin: 1.5rem 0; }
+    .battle-card {
+      display: block;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.1rem 1.25rem;
+      margin-bottom: 1rem;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.15s;
+    }
+    .battle-card:hover { border-color: var(--gold); }
+    .battle-card h2 {
+      font-family: "STKaiti", "KaiTi", serif;
+      color: var(--gold);
+      font-size: 1.25rem;
+      font-weight: 400;
+      margin-bottom: 0.35rem;
+    }
+    .battle-card .meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 0.5rem; }
+    .battle-card p { font-size: 0.9rem; color: var(--muted); }
+    .battle-card .tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      padding: 2px 8px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      margin-right: 6px;
+      margin-top: 8px;
+      color: #f0a070;
+    }
+    .note {
+      margin-top: 2rem;
+      padding: 1rem;
+      border: 1px dashed var(--border);
+      border-radius: 4px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    h3 { font-size: 1rem; color: var(--gold); margin: 2rem 0 0.75rem; font-weight: 400; }
+  </style>
+</head>
+<body>
+  <h1>绍宋战役沙盘</h1>
+  <p class="lead">
+    按小说时间线整理的交互推演页。支持<strong>兵力移动动画</strong>：点「🎬 动画播放」可自动连播全程；切换阶段时旗子与军队会平滑移动。单文件离线可用。
+  </p>
+
+  <h3>尧山之后 · 已有推演</h3>
+  <div class="timeline">
+    <a class="battle-card" href="yaoshan.html">
+      <h2>尧山之战</h2>
+      <div class="meta">第七十六章「落雕」· 14 阶段</div>
+      <p>娄室战死、龙纛下山、侯丹枭首。宋金攻守异形的转折点，网文圈最著名的单场大战描写。</p>
+      <span class="tag">守势决战</span><span class="tag">赵玖对射</span>
+    </a>
+    <a class="battle-card" href="taiyuan.html">
+      <h2>太原破城</h2>
+      <div class="meta">北伐第二阶段 · 6 阶段</div>
+      <p>雀鼠谷打通、两路合围，建炎九年最后一日赵玖与岳飞同日克太原；王德生擒完颜折合。</p>
+      <span class="tag">破阵太原</span><span class="tag">河东易手</span>
+    </a>
+    <a class="battle-card" href="huolu.html">
+      <h2>获鹿决战</h2>
+      <div class="meta">第六章「获鹿」· 9 阶段</div>
+      <p>井陉—百井寨—绵蔓水—获鹿平原大会战；王德阵斩阿里，十二万户败绩，北伐定鼎前最后一战。</p>
+      <span class="tag">由守转攻</span><span class="tag">吴玠统帅</span>
+    </a>
+  </div>
+
+  <h3>同一条主线 · 暂未做沙盘</h3>
+  <p style="color: var(--muted); font-size: 0.9rem;">
+    <strong>第三十八章「白马」</strong>：名场面在朝堂（改白马渡为绍兴、绍宋点题），不是阵地战，适合读原文。<br />
+    <strong>灭西夏</strong>、<strong>黄龙府</strong>：多为战略推进，若你需要可再补「河西」「黄龙府」简版推演。
+  </p>
+
+  <p class="note">
+    本页可部署到 Netlify / GitHub Pages 等，分享一个 https 链接即可打开，无需打包 zip。地图为示意图。请支持正版阅读《绍宋》。
+  </p>
+</body>
+</html>
