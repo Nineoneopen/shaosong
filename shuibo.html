@@ -197,15 +197,15 @@ header .sub { color: var(--muted); font-size: 0.9rem; }
   <header>
     <div class="top-row">
       <h1 id="hdrTitle"></h1>
-      <span class="sub" id="hdrSub">北伐第二阶段 · 动画推演</span>
+      <span class="sub" id="hdrSub">第六十五—六十七章「水泊」</span>
     </div>
     <nav class="battle-nav">
       <a href="index.html">战役目录</a>
       <a href="baima.html">白马绍兴</a>
       <a href="yaoshan.html">尧山之战</a>
-      <a href="taiyuan.html" class="active">太原破城</a>
+      <a href="taiyuan.html">太原破城</a>
       <a href="huolu.html">获鹿决战</a>
-      <a href="shuibo.html">水泊抗金</a>
+      <a href="shuibo.html" class="active">水泊抗金</a>
       <a href="xixia.html">灭西夏</a>
       <a href="huanglong.html">直捣黄龙</a>
     </nav>
@@ -215,10 +215,10 @@ header .sub { color: var(--muted); font-size: 0.9rem; }
       <div class="anim-progress" id="animProgress"></div>
       <canvas id="map"></canvas>
       <div class="map-legend" id="mapLegend">
-        <div><span style="background:#6b5344"></span>太行 / 雀鼠谷</div>
-        <div><span style="background:#c45c26"></span>宋军</div>
+        <div><span style="background:#3a6a88"></span>湖泊 / 河道</div>
+        <div><span style="background:#c45c26"></span>张荣水军</div>
         <div><span style="background:#3d6b8a"></span>金军</div>
-        <div><span style="background:#d4a84b"></span>御驾 / 龙纛</div>
+        <div><span style="background:#d4a84b"></span>替天行道</div>
       </div>
     </div>
     <aside class="sidebar">
@@ -261,127 +261,151 @@ header .sub { color: var(--muted); font-size: 0.9rem; }
   <div class="tooltip" id="tooltip"></div>
   <script>
 window.BATTLE_CONFIG = {
-  battleId: "taiyuan",
-  pageTitle: "绍宋 · 太原破城沙盘",
-  headerTitle: "太原破城",
-  headerSub: "北伐第二阶段 · 赵玖与岳飞同日克城",
-  mapStyle: "shanxi",
+  battleId: "shuibo",
+  pageTitle: "绍宋 · 水泊之战沙盘",
+  headerTitle: "水泊抗金",
+  headerSub: "第六十五—六十七章「水泊」· 张荣水军",
+  mapStyle: "water",
   animDuration: 1600,
-  holdDuration: 2800,
+  holdDuration: 3000,
+  playInterval: 4500,
   disclaimer:
-    "示意地图。情节据小说太原战役相关章节（如「陈述」章及北伐叙事）：两路合击、神速破城、俘获万户。仅供学习。",
+    "示意地图。情节据第六十五—六十七章：张荣梁山泊、御营水军、赐旗「替天行道」及水战抗金。非《水浒传》原址，取小说设定。仅供学习。",
   legend: [
-    { color: "#6b5344", label: "太行 / 雀鼠谷" },
-    { color: "#c45c26", label: "宋军" },
+    { color: "#3a6a88", label: "湖泊 / 河道" },
+    { color: "#c45c26", label: "张荣水军" },
     { color: "#3d6b8a", label: "金军" },
-    { color: "#d4a84b", label: "御驾 / 龙纛" },
+    { color: "#d4a84b", label: "替天行道" },
   ],
   terrain: [
-    { name: "太原府", x: 0.22, y: 0.45 },
-    { name: "元城", x: 0.28, y: 0.55 },
-    { name: "雀鼠谷", x: 0.38, y: 0.42 },
-    { name: "河东诸军", x: 0.15, y: 0.6 },
-    { name: "河西（岳飞）", x: 0.2, y: 0.75 },
+    { name: "梁山泊", x: 0.35, y: 0.42 },
+    { name: "水寨", x: 0.42, y: 0.48 },
+    { name: "狭港", x: 0.58, y: 0.52 },
+    { name: "御营码头", x: 0.18, y: 0.55 },
+    { name: "金军渡点", x: 0.78, y: 0.38 },
   ],
   phases: [
     {
-      title: "河东集结 · 北伐第二阶段",
-      time: "建炎九年 · 太原前线",
-      tags: ["song"],
+      title: "靖康后 · 泊上举义",
+      time: "建炎初",
+      tags: ["song", "naval"],
       narrative:
-        "尧山后宋金攻守异形，官家经白马绍兴整饬内政，继而筹备北伐。太原、元城成为金国固守河东的核心。宋军三十万御营分河北、河东，后者二十余万战兵汇集，要在东西两向同时破局，逼金军丧失整个河东的战略选择权。",
-      figures: "<b>赵玖</b> · <b>吕颐浩</b>（筹措军饷） · <b>吴玠</b>、<b>岳飞</b> · 金太原守军",
+        "张荣本为梁山泊头领，靖康国破后不肯降金，率水泊好汉据湖抗金，劫粮袭船，成为淮泗一带金军心腹之患。赵玖尚未亲政时，这支力量已在民间传说中与「替天行道」相连。",
+      figures: "<b>张荣</b> · 梁山旧部",
       units: [
-        { id: "taiyuan", type: "city", side: "jin", x: 0.22, y: 0.45, label: "太原" },
-        { id: "yuan", type: "city", side: "jin", x: 0.28, y: 0.55, label: "元城" },
-        { id: "song", type: "army", side: "song", x: 0.12, y: 0.5, label: "河东军" },
-        { id: "yue", type: "army", side: "song", x: 0.18, y: 0.72, label: "岳飞部" },
+        { id: "po", type: "terrain", x: 0.35, y: 0.42, label: "梁山泊" },
+        { id: "zhang", type: "fleet", side: "song", x: 0.4, y: 0.48, label: "张荣" },
+        { id: "jin", type: "fleet", side: "jin", x: 0.75, y: 0.4, label: "金船" },
       ],
-      arrows: [],
+      arrows: [{ from: [0.4, 0.48], to: [0.75, 0.4], side: "song", dash: true }],
     },
     {
-      title: "雀鼠谷打通 · 其疾如风",
-      time: "破城前夕",
+      title: "招抚入御营 · 水军统制",
+      time: "行在稳定后",
       tags: ["song", "turn"],
       narrative:
-        "宋军打通雀鼠谷要道后，进军、分割包围、破城的速度快得惊人——即便不算那场近乎神话的破城手法，仅看四面挺进与后勤规模，也已让敌我盟友震撼。金军来不及在野地重新聚拢优势，就被压入「只能跟宋军预设轨道走」的局面。",
-      figures: "<b>赵玖</b>亲督 · <b>曲端</b>、<b>刘錡</b>等骑兵尾随金军 · 河东诸将",
+        "赵玖整饬御营，将张荣部纳入正规水军序列，任御营水军统制。泊上草寇变为朝廷战船，但骨干仍是那批熟水性的梁山旧人——编制变了，脾气还在。",
+      figures: "<b>赵玖</b> · <b>张荣</b> · 枢府",
       units: [
-        { id: "gap", type: "terrain", x: 0.38, y: 0.42, label: "雀鼠谷" },
-        { id: "song1", type: "elite", side: "song", x: 0.32, y: 0.4, label: "东进" },
-        { id: "song2", type: "elite", side: "song", x: 0.25, y: 0.68, label: "河西" },
-        { id: "taiyuan", type: "city", side: "jin", x: 0.22, y: 0.45, label: "太原" },
+        { id: "zhang", type: "fleet", side: "song", x: 0.38, y: 0.46, label: "张荣" },
+        { id: "dock", type: "camp", side: "song", x: 0.18, y: 0.55, label: "御营码头" },
+        { id: "po", type: "terrain", x: 0.35, y: 0.42, label: "梁山泊" },
+      ],
+      arrows: [{ from: [0.35, 0.42], to: [0.18, 0.55], side: "song" }],
+    },
+    {
+      title: "赐旗「替天行道」",
+      time: "名场面",
+      tags: ["song", "turn"],
+      narrative:
+        "官家亲赐水军大旗「替天行道」——不是鼓励落草，而是把水浒象征收编进抗金叙事：天道在赵宋，行义在御营。张荣部士气大振，金军水师闻风丧胆。",
+      figures: "<b>赵玖</b> · <b>张荣</b>",
+      units: [
+        { id: "flag", type: "banner", side: "song", x: 0.42, y: 0.44, label: "替天行道" },
+        { id: "zhang", type: "fleet", side: "song", x: 0.45, y: 0.5, label: "水军" },
+        { id: "zhao", type: "banner", side: "song", x: 0.2, y: 0.52, label: "官家" },
+      ],
+      arrows: [{ from: [0.2, 0.52], to: [0.42, 0.44], side: "song" }],
+    },
+    {
+      title: "金军南下 · 欲断漕运",
+      time: "水泊篇战事初",
+      tags: ["jin", "naval"],
+      narrative:
+        "金军企图控制湖泊与河道，切断淮南漕运。大批征调北方船只南下，与张荣水军在开阔水面初次接战——铁甲战船对芦苇轻舟，金军倚仗体量，宋军倚仗水性与地利。",
+      figures: "<b>金军水军将领</b> · <b>张荣</b>",
+      units: [
+        { id: "jin", type: "fleet", side: "jin", x: 0.78, y: 0.38, label: "金舰队" },
+        { id: "song", type: "fleet", side: "song", x: 0.4, y: 0.48, label: "张荣" },
+        { id: "open", type: "terrain", x: 0.55, y: 0.45, label: "湖面" },
+      ],
+      arrows: [{ from: [0.78, 0.38], to: [0.4, 0.48], side: "jin" }],
+    },
+    {
+      title: "诱入狭港 · 分进合击",
+      time: "接战第二日",
+      tags: ["song", "naval", "turn"],
+      narrative:
+        "张荣佯败退入梁山泊外围狭港，金军大船吃水深、转圜不灵。伏兵于芦苇中点火放箭，两岸弩手俯射——水浒式水战战术在绍宋世界里成为御营水军的正规教材。",
+      figures: "<b>张荣</b> · 梁山旧部 · 金军先锋",
+      units: [
+        { id: "jin", type: "fleet", side: "jin", x: 0.62, y: 0.5, label: "金船被困" },
+        { id: "songL", type: "fleet", side: "song", x: 0.48, y: 0.55, label: "伏左" },
+        { id: "songR", type: "fleet", side: "song", x: 0.52, y: 0.48, label: "伏右" },
+        { id: "narrow", type: "terrain", x: 0.58, y: 0.52, label: "狭港" },
       ],
       arrows: [
-        { from: [0.32, 0.4], to: [0.22, 0.45], side: "song" },
-        { from: [0.25, 0.68], to: [0.28, 0.55], side: "song" },
+        { from: [0.48, 0.55], to: [0.62, 0.5], side: "song" },
+        { from: [0.52, 0.48], to: [0.62, 0.5], side: "song" },
       ],
     },
     {
-      title: "两路合击 · 包围太原",
-      time: "总攻前",
-      tags: ["song", "jin"],
+      title: "火攻连船 · 大破金舟",
+      time: "当夜",
+      tags: ["song", "naval"],
       narrative:
-        "小说写赵官家一路与岳飞部在西线施压，河东主力在东线合围。金军困守太原、元城，城内猛安谋克尚不肯降——但城外包围与破城器械、内应战术已使「敌我对比」极端悬殊：乱一夜，只要扫清城内金军即可。",
-      figures: "<b>岳飞</b>（河西） · <b>赵玖</b> · <b>王德</b> · 金太原万户 <b>完颜折合</b>等",
+        "风向有利时，宋军火船贴靠金军连锁战船，烈焰映红湖面。金军不识水泊地形，登陆又遭截击，溃兵只得弃船南逃。此战奠定御营水军「北方不习水战」的威名。",
+      figures: "<b>张荣</b> · 火船队",
       units: [
-        { id: "taiyuan", type: "city", side: "jin", x: 0.22, y: 0.45, label: "太原" },
-        { id: "zhao", type: "banner", side: "song", x: 0.3, y: 0.38, label: "赵玖" },
-        { id: "yue", type: "elite", side: "song", x: 0.2, y: 0.62, label: "岳飞" },
-        { id: "ring", type: "army", side: "song", x: 0.14, y: 0.48, label: "围军" },
+        { id: "fire", type: "elite", side: "song", x: 0.55, y: 0.5, label: "火船" },
+        { id: "jin", type: "broken", side: "jin", x: 0.68, y: 0.48, label: "金军溃" },
+        { id: "zhang", type: "fleet", side: "song", x: 0.42, y: 0.52, label: "张荣" },
+      ],
+      arrows: [{ from: [0.55, 0.5], to: [0.68, 0.48], side: "song" }],
+    },
+    {
+      title: "控湖卫淮 · 漕运复通",
+      time: "战后",
+      tags: ["song", "turn"],
+      narrative:
+        "梁山泊—御营码头一线重新成为淮南粮道屏障。张荣部虽仍带草莽习气，却已是官家倚重的水军柱石——后封鲁王、领少傅，「替天行道」旗终成为抗金象征而非盗匪招牌。",
+      figures: "<b>张荣</b> · <b>吕颐浩</b>（筹粮）",
+      units: [
+        { id: "dock", type: "camp", side: "song", x: 0.18, y: 0.55, label: "码头" },
+        { id: "grain", type: "special", side: "song", x: 0.3, y: 0.5, label: "漕船" },
+        { id: "zhang", type: "fleet", side: "song", x: 0.4, y: 0.46, label: "张荣" },
       ],
       arrows: [
-        { from: [0.14, 0.48], to: [0.22, 0.45], side: "song" },
-        { from: [0.2, 0.62], to: [0.22, 0.45], side: "song", dash: true },
+        { from: [0.4, 0.46], to: [0.18, 0.55], side: "song" },
+        { from: [0.3, 0.5], to: [0.18, 0.55], side: "song", dash: true },
       ],
     },
     {
-      title: "同日破城 · 建炎九年最后一日",
-      time: "除夕前后",
-      tags: ["song", "turn"],
+      title: "水泊篇收束 · 鲁王伏笔",
+      time: "章末",
+      tags: ["song", "naval"],
       narrative:
-        "「建炎九年最后一日，赵官家与岳飞同日破城，太原府、大名府齐齐落下。」太原城内宋军一度亢奋搜检，乱而不伤大局——一个下午三名猛安、数十谋克或擒或斩，送到官家堂前；女真猛安仍多不降，府衙门前斩首接连。",
-      figures: "<b>赵玖</b>驻跸府衙 · <b>岳飞</b> · 城内金军猛安谋克",
+        "水泊三章写完，读者印象最深的不是某一场具体水战，而是「水浒符号被朝廷收编」的反差感：张荣仍像梁山好汉，却已在赵宋龙纛下替天行道。此后北伐多赖陆战，水军则镇守淮泗。",
+      figures: "<b>张荣</b> · <b>赵玖</b>",
       units: [
-        { id: "taiyuan", type: "city", side: "song", x: 0.22, y: 0.45, label: "太原已下" },
-        { id: "long", type: "banner", side: "song", x: 0.24, y: 0.42, label: "龙纛" },
-        { id: "jin", type: "broken", side: "jin", x: 0.26, y: 0.48, label: "城内残金" },
+        { id: "flag", type: "banner", side: "song", x: 0.42, y: 0.44, label: "替天行道" },
+        { id: "po", type: "terrain", x: 0.35, y: 0.42, label: "梁山泊" },
+        { id: "future", type: "banner", side: "song", x: 0.22, y: 0.38, label: "鲁王（后封）" },
       ],
-      arrows: [],
-    },
-    {
-      title: "生擒万户 · 完颜折合",
-      time: "破城当日",
-      tags: ["song"],
-      narrative:
-        "御营中军副都统王德亲自牵引被俘金将入堂——完颜折合，金国太原主将，韩常之后第二个被生擒的万户。宋金军制不同，万户在金军鼎盛时几乎可比宋御营都统，此俘震动河东。",
-      figures: "<b>王德</b> · <b>完颜折合</b>（生擒） · <b>赵玖</b> · 诸近臣",
-      units: [
-        { id: "wang", type: "elite", side: "song", x: 0.28, y: 0.44, label: "王德" },
-        { id: "zhehe", type: "dead", side: "jin", x: 0.3, y: 0.46, label: "折合" },
-        { id: "hall", type: "camp", side: "song", x: 0.24, y: 0.4, label: "府衙" },
-      ],
-      arrows: [{ from: [0.28, 0.44], to: [0.24, 0.4], side: "song" }],
-    },
-    {
-      title: "河东易手 · 迫金决战",
-      time: "破城后",
-      tags: ["song", "turn"],
-      narrative:
-        "太原、元城双陷，金军丧失河东，被迫在宋军预设的「出井陉、河北决战」单轨道上应对。世人仍沉浸破城神话，而少数谋士已在想野地决战；绝大多数军民则已视北伐大势为不可逆——为次年正月向获鹿、真定推进埋下伏笔。",
-      figures: "<b>赵玖</b> · <b>吕颐浩</b> · <b>兀术</b>、<b>拔离速</b>（河北集结）",
-      units: [
-        { id: "taiyuan", type: "city", side: "song", x: 0.22, y: 0.45, label: "太原" },
-        { id: "east", type: "army", side: "song", x: 0.42, y: 0.48, label: "东进井陉" },
-        { id: "jin", type: "army", side: "jin", x: 0.65, y: 0.4, label: "金军河北" },
-      ],
-      arrows: [{ from: [0.22, 0.45], to: [0.42, 0.48], side: "song" }],
+      arrows: [{ from: [0.42, 0.44], to: [0.22, 0.38], side: "song", dash: true }],
     },
   ],
 };
-
-// fix typo in phase 5 arrow
-BATTLE_CONFIG.phases[4].arrows[0].to = [0.24, 0.4];
 
 /**
  * 绍宋战役沙盘 — 通用引擎（含阶段过渡动画）

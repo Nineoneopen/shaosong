@@ -197,13 +197,13 @@ header .sub { color: var(--muted); font-size: 0.9rem; }
   <header>
     <div class="top-row">
       <h1 id="hdrTitle"></h1>
-      <span class="sub" id="hdrSub">北伐第二阶段 · 动画推演</span>
+      <span class="sub" id="hdrSub">第三十八章「白马」· 朝局推演</span>
     </div>
     <nav class="battle-nav">
       <a href="index.html">战役目录</a>
-      <a href="baima.html">白马绍兴</a>
+      <a href="baima.html" class="active">白马绍兴</a>
       <a href="yaoshan.html">尧山之战</a>
-      <a href="taiyuan.html" class="active">太原破城</a>
+      <a href="taiyuan.html">太原破城</a>
       <a href="huolu.html">获鹿决战</a>
       <a href="shuibo.html">水泊抗金</a>
       <a href="xixia.html">灭西夏</a>
@@ -215,10 +215,10 @@ header .sub { color: var(--muted); font-size: 0.9rem; }
       <div class="anim-progress" id="animProgress"></div>
       <canvas id="map"></canvas>
       <div class="map-legend" id="mapLegend">
-        <div><span style="background:#6b5344"></span>太行 / 雀鼠谷</div>
-        <div><span style="background:#c45c26"></span>宋军</div>
-        <div><span style="background:#3d6b8a"></span>金军</div>
-        <div><span style="background:#d4a84b"></span>御驾 / 龙纛</div>
+        <div><span style="background:#d4a84b"></span>官家 / 行在</div>
+        <div><span style="background:#c45c26"></span>淮西诸镇</div>
+        <div><span style="background:#6b5344"></span>朝堂议题</div>
+        <div><span style="background:#3d6b8a"></span>金国压力</div>
       </div>
     </div>
     <aside class="sidebar">
@@ -261,127 +261,149 @@ header .sub { color: var(--muted); font-size: 0.9rem; }
   <div class="tooltip" id="tooltip"></div>
   <script>
 window.BATTLE_CONFIG = {
-  battleId: "taiyuan",
-  pageTitle: "绍宋 · 太原破城沙盘",
-  headerTitle: "太原破城",
-  headerSub: "北伐第二阶段 · 赵玖与岳飞同日克城",
-  mapStyle: "shanxi",
+  battleId: "baima",
+  pageTitle: "绍宋 · 白马绍兴沙盘",
+  headerTitle: "白马 · 绍兴",
+  headerSub: "第三十八章「白马」· 朝局与淮西",
+  mapStyle: "court",
   animDuration: 1600,
-  holdDuration: 2800,
+  holdDuration: 3200,
+  playInterval: 4500,
   disclaimer:
-    "示意地图。情节据小说太原战役相关章节（如「陈述」章及北伐叙事）：两路合击、神速破城、俘获万户。仅供学习。",
+    "示意地图。情节据第三十八章：二圣归来、访张俊、杀白马定绍兴、「绍宋」点题。朝堂线为主，淮西为地理背景。仅供学习。",
   legend: [
-    { color: "#6b5344", label: "太行 / 雀鼠谷" },
-    { color: "#c45c26", label: "宋军" },
-    { color: "#3d6b8a", label: "金军" },
-    { color: "#d4a84b", label: "御驾 / 龙纛" },
+    { color: "#d4a84b", label: "官家 / 行在" },
+    { color: "#c45c26", label: "淮西诸镇" },
+    { color: "#6b5344", label: "朝堂议题" },
+    { color: "#3d6b8a", label: "金国压力" },
   ],
   terrain: [
-    { name: "太原府", x: 0.22, y: 0.45 },
-    { name: "元城", x: 0.28, y: 0.55 },
-    { name: "雀鼠谷", x: 0.38, y: 0.42 },
-    { name: "河东诸军", x: 0.15, y: 0.6 },
-    { name: "河西（岳飞）", x: 0.2, y: 0.75 },
+    { name: "行在（淮南）", x: 0.22, y: 0.32 },
+    { name: "八公山", x: 0.28, y: 0.42 },
+    { name: "下蔡 / 张俊", x: 0.72, y: 0.58 },
+    { name: "寿州", x: 0.55, y: 0.48 },
+    { name: "白马渡（旧名）", x: 0.68, y: 0.42 },
   ],
   phases: [
     {
-      title: "河东集结 · 北伐第二阶段",
-      time: "建炎九年 · 太原前线",
+      title: "二圣归来 · 朝堂暗涌",
+      time: "建炎七年 · 迎驾前后",
+      tags: ["politics", "turn"],
+      narrative:
+        "徽钦二帝北归，行在文武表面恭迎，实则各怀心思。大臣们常拿「二圣」拿捏官家；赵玖心里清楚：众人敬的不是二圣，而是借二圣制约新君。本章由此起笔，承前启后。",
+      figures: "<b>赵玖</b> · <b>吕颐浩</b>、<b>张浚</b>等 · 二圣（政治符号）",
+      units: [
+        { id: "court", type: "court", side: "song", x: 0.22, y: 0.32, label: "行在" },
+        { id: "ersheng", type: "special", side: "jin", x: 0.35, y: 0.28, label: "二圣议题" },
+        { id: "jinP", type: "army", side: "jin", x: 0.85, y: 0.35, label: "金压境" },
+      ],
+      arrows: [{ from: [0.35, 0.28], to: [0.22, 0.32], side: "jin", dash: true }],
+    },
+    {
+      title: "除夕赐盒 · 访张俊",
+      time: "除夕 · 八公山北峦设宴后",
       tags: ["song"],
       narrative:
-        "尧山后宋金攻守异形，官家经白马绍兴整饬内政，继而筹备北伐。太原、元城成为金国固守河东的核心。宋军三十万御营分河北、河东，后者二十余万战兵汇集，要在东西两向同时破局，逼金军丧失整个河东的战略选择权。",
-      figures: "<b>赵玖</b> · <b>吕颐浩</b>（筹措军饷） · <b>吴玠</b>、<b>岳飞</b> · 金太原守军",
+        "赵玖在淮南设宴犒文武，忽念及与张俊在东台亭旧诺，独自抱食盒赴下蔡。不以君威压人，而以寿州贡品、东南珍宝重申：能抗金者，官家不吝赏赐。",
+      figures: "<b>赵玖</b> · <b>张俊</b>（淮西） · <b>田师中</b>等",
       units: [
-        { id: "taiyuan", type: "city", side: "jin", x: 0.22, y: 0.45, label: "太原" },
-        { id: "yuan", type: "city", side: "jin", x: 0.28, y: 0.55, label: "元城" },
-        { id: "song", type: "army", side: "song", x: 0.12, y: 0.5, label: "河东军" },
-        { id: "yue", type: "army", side: "song", x: 0.18, y: 0.72, label: "岳飞部" },
+        { id: "zhao", type: "banner", side: "song", x: 0.28, y: 0.4, label: "赵玖" },
+        { id: "bag", type: "special", side: "song", x: 0.3, y: 0.44, label: "食盒" },
+        { id: "zhang", type: "army", side: "song", x: 0.72, y: 0.58, label: "张俊" },
+        { id: "xiashu", type: "terrain", x: 0.72, y: 0.58, label: "下蔡" },
       ],
-      arrows: [],
+      arrows: [{ from: [0.28, 0.4], to: [0.72, 0.58], side: "song", dash: true }],
     },
     {
-      title: "雀鼠谷打通 · 其疾如风",
-      time: "破城前夕",
+      title: "君子约定 · 下蔡可弃",
+      time: "当夜",
       tags: ["song", "turn"],
       narrative:
-        "宋军打通雀鼠谷要道后，进军、分割包围、破城的速度快得惊人——即便不算那场近乎神话的破城手法，仅看四面挺进与后勤规模，也已让敌我盟友震撼。金军来不及在野地重新聚拢优势，就被压入「只能跟宋军预设轨道走」的局面。",
-      figures: "<b>赵玖</b>亲督 · <b>曲端</b>、<b>刘錡</b>等骑兵尾随金军 · 河东诸将",
+        "赵玖坦言：刘光世闯祸使下蔡成孤城，张俊守不住可降可弃，官家不怪——但若龙纛仍在对岸，请务必提前通禀。这是君臣之间极罕见的「把后背交给对方」的约定。",
+      figures: "<b>赵玖</b> · <b>张俊</b>",
       units: [
-        { id: "gap", type: "terrain", x: 0.38, y: 0.42, label: "雀鼠谷" },
-        { id: "song1", type: "elite", side: "song", x: 0.32, y: 0.4, label: "东进" },
-        { id: "song2", type: "elite", side: "song", x: 0.25, y: 0.68, label: "河西" },
-        { id: "taiyuan", type: "city", side: "jin", x: 0.22, y: 0.45, label: "太原" },
+        { id: "zhang", type: "army", side: "song", x: 0.7, y: 0.55, label: "张俊" },
+        { id: "city", type: "city", side: "song", x: 0.75, y: 0.62, label: "下蔡孤城" },
+        { id: "long", type: "banner", side: "song", x: 0.25, y: 0.38, label: "龙纛（对岸）" },
+        { id: "liu", type: "broken", side: "song", x: 0.6, y: 0.48, label: "刘光世祸" },
       ],
-      arrows: [
-        { from: [0.32, 0.4], to: [0.22, 0.45], side: "song" },
-        { from: [0.25, 0.68], to: [0.28, 0.55], side: "song" },
-      ],
+      arrows: [{ from: [0.7, 0.55], to: [0.25, 0.38], side: "song", dash: true }],
     },
     {
-      title: "两路合击 · 包围太原",
-      time: "总攻前",
-      tags: ["song", "jin"],
+      title: "议和声浪 · 去位让贤",
+      time: "年后 · 朝议",
+      tags: ["politics", "jin"],
       narrative:
-        "小说写赵官家一路与岳飞部在西线施压，河东主力在东线合围。金军困守太原、元城，城内猛安谋克尚不肯降——但城外包围与破城器械、内应战术已使「敌我对比」极端悬殊：乱一夜，只要扫清城内金军即可。",
-      figures: "<b>岳飞</b>（河西） · <b>赵玖</b> · <b>王德</b> · 金太原万户 <b>完颜折合</b>等",
+        "「二圣」与议和派合流，逼官家退让。赵玖当众点破：你们也不是真敬二圣，只是拿二圣来拿捏朕。一句「二圣算什么东西」震住全场——他不怕复辟，怕的是战车走回旧路。",
+      figures: "<b>赵玖</b> · 主和派大臣 · <b>张浚</b>等",
       units: [
-        { id: "taiyuan", type: "city", side: "jin", x: 0.22, y: 0.45, label: "太原" },
-        { id: "zhao", type: "banner", side: "song", x: 0.3, y: 0.38, label: "赵玖" },
-        { id: "yue", type: "elite", side: "song", x: 0.2, y: 0.62, label: "岳飞" },
-        { id: "ring", type: "army", side: "song", x: 0.14, y: 0.48, label: "围军" },
+        { id: "court", type: "court", side: "song", x: 0.24, y: 0.3, label: "朝堂" },
+        { id: "peace", type: "special", side: "jin", x: 0.4, y: 0.26, label: "议和派" },
+        { id: "zhao", type: "banner", side: "song", x: 0.22, y: 0.34, label: "官家" },
       ],
-      arrows: [
-        { from: [0.14, 0.48], to: [0.22, 0.45], side: "song" },
-        { from: [0.2, 0.62], to: [0.22, 0.45], side: "song", dash: true },
-      ],
+      arrows: [{ from: [0.4, 0.26], to: [0.22, 0.34], side: "jin", dash: true }],
     },
     {
-      title: "同日破城 · 建炎九年最后一日",
-      time: "除夕前后",
+      title: "杀白马 · 定绍兴",
+      time: "名场面",
       tags: ["song", "turn"],
       narrative:
-        "「建炎九年最后一日，赵官家与岳飞同日破城，太原府、大名府齐齐落下。」太原城内宋军一度亢奋搜检，乱而不伤大局——一个下午三名猛安、数十谋克或擒或斩，送到官家堂前；女真猛安仍多不降，府衙门前斩首接连。",
-      figures: "<b>赵玖</b>驻跸府衙 · <b>岳飞</b> · 城内金军猛安谋克",
+        "赵玖以白马为祭，斩断「白马渡」旧名与屈辱记忆，改定「绍兴」年号。不是简朴表演，而是「每与操反，事乃可成」——与旧宋切割，另开一条车道。",
+      figures: "<b>赵玖</b> · 文武惊愕",
       units: [
-        { id: "taiyuan", type: "city", side: "song", x: 0.22, y: 0.45, label: "太原已下" },
-        { id: "long", type: "banner", side: "song", x: 0.24, y: 0.42, label: "龙纛" },
-        { id: "jin", type: "broken", side: "jin", x: 0.26, y: 0.48, label: "城内残金" },
+        { id: "horse", type: "dead", side: "song", x: 0.5, y: 0.45, label: "白马" },
+        { id: "zhao", type: "banner", side: "song", x: 0.24, y: 0.32, label: "赵玖" },
+        { id: "name", type: "terrain", x: 0.68, y: 0.42, label: "绍兴" },
       ],
-      arrows: [],
+      arrows: [{ from: [0.24, 0.32], to: [0.68, 0.42], side: "song" }],
     },
     {
-      title: "生擒万户 · 完颜折合",
-      time: "破城当日",
+      title: "绍宋点题 · 继而导之",
+      time: "同日",
+      tags: ["politics", "turn"],
+      narrative:
+        "「继而导之谓之绍，朕当绍宋。」——继承赵氏正统（继而），更要导之新路（导之）。书名《绍宋》在此落点，也是赵玖对「新宋」的自我定位。",
+      figures: "<b>赵玖</b> · 史笔（读者视角）",
+      units: [
+        { id: "zhao", type: "banner", side: "song", x: 0.26, y: 0.3, label: "官家" },
+        { id: "old", type: "special", side: "jin", x: 0.38, y: 0.35, label: "旧宋牵绊" },
+        { id: "new", type: "banner", side: "song", x: 0.55, y: 0.32, label: "新宋" },
+      ],
+      arrows: [
+        { from: [0.38, 0.35], to: [0.55, 0.32], side: "song" },
+        { from: [0.26, 0.3], to: [0.55, 0.32], side: "song", dash: true },
+      ],
+    },
+    {
+      title: "淮西整军 · 由守转攻",
+      time: "绍兴定后",
       tags: ["song"],
       narrative:
-        "御营中军副都统王德亲自牵引被俘金将入堂——完颜折合，金国太原主将，韩常之后第二个被生擒的万户。宋金军制不同，万户在金军鼎盛时几乎可比宋御营都统，此俘震动河东。",
-      figures: "<b>王德</b> · <b>完颜折合</b>（生擒） · <b>赵玖</b> · 诸近臣",
+        "朝堂自我革命告一段落，淮西诸镇在张俊等人麾下重新纳入抗金体系。全书战略由守势决战（尧山前夜）转向积粮整军、北伐筹备——白马一章是精神分水岭。",
+      figures: "<b>张俊</b> · <b>韩世忠</b> · <b>岳飞</b>（将起）",
       units: [
-        { id: "wang", type: "elite", side: "song", x: 0.28, y: 0.44, label: "王德" },
-        { id: "zhehe", type: "dead", side: "jin", x: 0.3, y: 0.46, label: "折合" },
-        { id: "hall", type: "camp", side: "song", x: 0.24, y: 0.4, label: "府衙" },
+        { id: "huai", type: "army", side: "song", x: 0.65, y: 0.52, label: "淮西军" },
+        { id: "court", type: "court", side: "song", x: 0.22, y: 0.32, label: "行在" },
+        { id: "jin", type: "army", side: "jin", x: 0.88, y: 0.4, label: "金军" },
       ],
-      arrows: [{ from: [0.28, 0.44], to: [0.24, 0.4], side: "song" }],
+      arrows: [{ from: [0.22, 0.32], to: [0.65, 0.52], side: "song" }],
     },
     {
-      title: "河东易手 · 迫金决战",
-      time: "破城后",
+      title: "绍兴元年 · 序幕",
+      time: "章末",
       tags: ["song", "turn"],
       narrative:
-        "太原、元城双陷，金军丧失河东，被迫在宋军预设的「出井陉、河北决战」单轨道上应对。世人仍沉浸破城神话，而少数谋士已在想野地决战；绝大多数军民则已视北伐大势为不可逆——为次年正月向获鹿、真定推进埋下伏笔。",
-      figures: "<b>赵玖</b> · <b>吕颐浩</b> · <b>兀术</b>、<b>拔离速</b>（河北集结）",
+        "白马已杀，年号已改，朝堂与将帅都知道：官家要的是能打的天下，不是跪着的和平。读者由此进入尧山、太原、获鹿之前漫长的「备战与蜕变」阶段。",
+      figures: "<b>赵玖</b> · 新宋群臣",
       units: [
-        { id: "taiyuan", type: "city", side: "song", x: 0.22, y: 0.45, label: "太原" },
-        { id: "east", type: "army", side: "song", x: 0.42, y: 0.48, label: "东进井陉" },
-        { id: "jin", type: "army", side: "jin", x: 0.65, y: 0.4, label: "金军河北" },
+        { id: "shaox", type: "terrain", x: 0.68, y: 0.42, label: "绍兴" },
+        { id: "long", type: "banner", side: "song", x: 0.5, y: 0.38, label: "抗金" },
+        { id: "north", type: "army", side: "jin", x: 0.82, y: 0.35, label: "北伐在望" },
       ],
-      arrows: [{ from: [0.22, 0.45], to: [0.42, 0.48], side: "song" }],
+      arrows: [{ from: [0.5, 0.38], to: [0.82, 0.35], side: "song", dash: true }],
     },
   ],
 };
-
-// fix typo in phase 5 arrow
-BATTLE_CONFIG.phases[4].arrows[0].to = [0.24, 0.4];
 
 /**
  * 绍宋战役沙盘 — 通用引擎（含阶段过渡动画）
